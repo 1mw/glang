@@ -494,7 +494,10 @@ public class GInterpreter {
 			}
 		}
 		
-		return null;
+		// Variable does not exist, make it
+		RegistryTie t = new RegistryTie(v, ri++);
+		ties[ti++] = t;
+		return t;
 	}
 	
 	public void displayError(String message, int line) {
