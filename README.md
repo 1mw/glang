@@ -2,22 +2,16 @@
 The g language.
 
 ### Syntax
-There are 3 types of symbols:
-	- operator
-	- operand
-		- literal
-		- variable
-		- register
-	- separator
+There are 3 types of symbols: operators, operands, and separators. Operators are built in (see below). Operands can be either variables, registers, or literals. Separators separate things passed to an operator. Example: ```@jumpz $v :: 3```
 
 Operators start with "@".
 Variables start with "$".
 Registers start with "#".
-Comments start with ";" and must take up a whole line. Ex: ```; This is a comment```
+Comments start with ";" and must take up a whole line. Example: ```; This is a comment```
 Separators are "::".
 The current line is "~".
 
-Compound expressions are NOT allowed. Ex: ```@print $v + $f``` is invalid.
+Compound expressions are NOT allowed. Example: ```@print $v + $f``` is invalid.
 
 There are 19 operators: ("value" refers to a literal, variable, or register.)
 
@@ -25,7 +19,7 @@ There are 19 operators: ("value" refers to a literal, variable, or register.)
 		Tells the interpreter that you will be using this variable in the future.
 		While you do not need to @init a variable, you should @init variables you
 		plan to use heavily in the future to make accesses to them more efficient.
-		Ex:
+		Example:
 ```
 ; Beginning of program
 @init $var
@@ -45,7 +39,7 @@ There are 19 operators: ("value" refers to a literal, variable, or register.)
 
 	- @prints (string)
 		Prints a string literal to the console. NOTE: @prints does not follow the normal syntax. 
-		It prints all remaining characters on the line. Ex: @prints Hello world! will print "Hello world!"
+		It prints all remaining characters on the line. Example: @prints Hello world! will print "Hello world!"
 		and @prints $v will print "$v".
 
 	- @printl (string)
