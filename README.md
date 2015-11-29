@@ -13,6 +13,7 @@ There are 3 types of symbols:
 Operators start with "@".
 Variables start with "$".
 Registers start with "#".
+Comments start with ";" and must take up a whole line. Ex: ```; This is a comment```
 Separators are "::".
 
 Compound expressions are NOT allowed. Ex: ```@print $v + $f``` is invalid.
@@ -20,7 +21,17 @@ Compound expressions are NOT allowed. Ex: ```@print $v + $f``` is invalid.
 There are 19 operators: ("value" refers to a literal, variable, or register.)
 
 	- @init (variable)
-		Defines a variable. You must @init a name before you use it.
+		Tells the interpreter that you will be using this variable in the future.
+		While you do not need to @init a variable, you should @init variables you
+		plan to use heavily in the future to make accesses to them more efficient.
+		Ex:
+```
+; Beginning of program
+@init $var
+; Tell the compiler you will be using this variable heavily later
+...
+@+ $var :: 1 :: $var
+```
 
 	- @store (variable) :: (value)
 		Stores a value in a variable.
