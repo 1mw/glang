@@ -18,6 +18,7 @@ Separators are "::".
 Compound expressions are NOT allowed. Ex: ```@print $v + $f``` is invalid.
 
 There are 19 operators: ("value" refers to a literal, variable, or register.)
+
 	- @init (variable)
 		Defines a variable. You must @init a name before you use it.
 
