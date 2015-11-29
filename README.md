@@ -32,10 +32,12 @@ There are 19 operators: ("value" refers to a literal, variable, or register.)
 		Prints a value to the console as a Unicode character.
 
 	- @prints (string)
-		Prints a string literal to the console. NOTE: @prints does not follow the normal syntax. It prints all remaining characters on the line. Ex: @prints Hello world! will print "Hello world!" and @prints $v will print "$v".
+		Prints a string literal to the console. NOTE: @prints does not follow the normal syntax. 
+		It prints all remaining characters on the line. Ex: @prints Hello world! will print "Hello world!" and @prints $v will print "$v".
 
 	- @printl (string)
-		Prints a string literal and a new line to the console. NOTE: follows the same irregular syntax as @prints.
+		Prints a string literal and a new line to the console. 
+		NOTE: follows the same irregular syntax as @prints.
 
 	- @newline
 		Prints a new line to the console.
