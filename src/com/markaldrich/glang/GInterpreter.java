@@ -1,5 +1,8 @@
 package com.markaldrich.glang;
 
+import java.util.*;
+import java.io.*;
+
 public class GInterpreter {
 	private int[] stack = new int[1000];
 	private int si = 0;
@@ -449,22 +452,35 @@ public class GInterpreter {
 		} catch(RuntimeException e) {
 			e.printStackTrace();
 		} finally {
-			System.out.println("Printing registers...");
-			for(int s = 0; s < 10; s++) {
-				System.out.println("" + s + ": " + registers[s]);
+			PrintWriter writer = null;
+			try {
+				writer = new PrintWriter(System.getProperty("user.home") + "/log" + System.currentTimeMillis() + ".txt", "UTF-8");
+			} catch(Exception e) {
+				e.printStackTrace();
+				return 1;
+			}
+			writer.println("\nProgram terminated.");
+			writer.println("Printing registers...");
+			for(int s = 0; s < 1000; s++) {
+				writer.println("" + s + ": " + registers[s]);
 			}
 			
-			System.out.println("Printing ties...");
-			for(int s = 0; s < 10; s++) {
-				System.out.println("" + s + ": " + ties[s]);
+			writer.println();
+			writer.println("Printing ties...");
+			for(int s = 0; s < 1000; s++) {
+				writer.println("" + s + ": " + ties[s]);
 			}
 			
-			System.out.println("si=" + si);
+			writer.println();
+			writer.println("si=" + si);
 			
-			System.out.println("Printing stack...");
-			for(int s = 0; s < 10; s++) {
-				System.out.println("" + s + ": " + stack[s]);
+			writer.println();
+			writer.println("Printing stack...");
+			for(int s = 0; s < 1000; s++) {
+				writer.println("" + s + ": " + stack[s]);
 			}
+			
+			writer.close();
 			
 			return 0;
 		}
