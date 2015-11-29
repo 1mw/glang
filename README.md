@@ -1,7 +1,7 @@
 # glang
 The g language.
 
-# Syntax
+### Syntax
 There are 3 types of symbols:
 	- operator
 	- operand
