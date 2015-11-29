@@ -33,7 +33,8 @@ There are 19 operators: ("value" refers to a literal, variable, or register.)
 
 	- @prints (string)
 		Prints a string literal to the console. NOTE: @prints does not follow the normal syntax. 
-		It prints all remaining characters on the line. Ex: @prints Hello world! will print "Hello world!" and @prints $v will print "$v".
+		It prints all remaining characters on the line. Ex: @prints Hello world! will print "Hello world!"
+		and @prints $v will print "$v".
 
 	- @printl (string)
 		Prints a string literal and a new line to the console. 
