@@ -10,6 +10,8 @@ public class GInterpreter {
 	private int[] registers = new int[1000];
 	private int ri = 0;
 	
+	private int i = 0;
+	
 	RegistryTie[] ties = new RegistryTie[1000];
 	int ti = 0;
 	
@@ -17,13 +19,13 @@ public class GInterpreter {
 		// Get lines
 		String[] lines = src.split("\n");
 		
-		for(int i = 0; i < lines.length; i++) {
-			lines[i] = lines[i].trim();
+		for(int x = 0; x < lines.length; x++) {
+			lines[x] = lines[x].trim();
 		}
 		
 		// Loop through lines.
 		try {
-			for(int i = 0; i < lines.length; ) {
+			for(; i < lines.length; ) {
 				// Comment
 				if(lines[i].startsWith(";")) {
 					i++;
@@ -506,7 +508,10 @@ public class GInterpreter {
 	
 	public int resolveValue(String operand) throws UnresolvedException {
 		operand = operand.trim();
-		if(operand.startsWith("$")) {
+		
+		if(operand.equals("~")) {
+			return i;
+		} else if(operand.startsWith("$")) {
 			// Variable=
 			RegistryTie t = resolveTie(operand);
 			if(t == null) {
