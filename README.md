@@ -89,3 +89,7 @@ There are 19 operators: ("value" refers to a literal, variable, or register.)
 
 	- @pop (variable)
 		Pop the value on the stack into variable.
+
+### Hello world!
+A "Hello world!" program can be written in g farily easily.
+```@printl Hello world!```
