@@ -15,6 +15,7 @@ Variables start with "$".
 Registers start with "#".
 Comments start with ";" and must take up a whole line. Ex: ```; This is a comment```
 Separators are "::".
+The current line is "~".
 
 Compound expressions are NOT allowed. Ex: ```@print $v + $f``` is invalid.
 
