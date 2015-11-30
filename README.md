@@ -10,6 +10,7 @@ Registers start with "#".
 Comments start with ";" and must take up a whole line. Example: ```; This is a comment```
 Separators are "::".
 The current line is "~".
+The line after the current line is "^" (used for functions).
 
 Compound expressions are NOT allowed. Example: ```@print $v + $f``` is invalid.
 

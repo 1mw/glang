@@ -12,6 +12,9 @@ public class GInterpreter {
 	
 	private int i = 0;
 	
+	private ArrayList<Integer> funcsIgnored = new ArrayList<>();
+	private ArrayList<Integer> funcEndsIgnored = new ArrayList<>();
+	
 	RegistryTie[] ties = new RegistryTie[1000];
 	int ti = 0;
 	
@@ -25,7 +28,7 @@ public class GInterpreter {
 		
 		// Loop through lines.
 		try {
-			for(; i < lines.length; ) {
+			linesLoop: for(; i < lines.length; ) {
 				// Comment
 				if(lines[i].startsWith(";")) {
 					i++;
@@ -420,7 +423,12 @@ public class GInterpreter {
 						return 1;
 					}
 					
-					stack[si++] = value;
+					try {
+						pushToStack(value);
+					} catch(StackError e) {
+						displayError(e.getMessage(), i);
+						return 1;
+					}
 				} else if(lines[i].startsWith("@pop ")) { // 5
 					String suffix = lines[i].substring(5);
 					suffix = suffix.trim();
@@ -428,9 +436,15 @@ public class GInterpreter {
 					RegistryTie t = resolveTie(suffix);
 					if(t == null) {
 						displayError("@pop: cannot resolve variable: " + suffix, i);
+						return 1;
 					}
 					
-					registers[t.getPointer()] = stack[--si];
+					try {
+						registers[t.getPointer()] = popFromStack();
+					} catch(StackError e) {
+						displayError(e.getMessage(), i);
+						return 1;
+					}
 					stack[si] = 0;
 				} else if(lines[i].startsWith("@jump ")) { // 6
 					String suffix = lines[i].substring(6);
@@ -447,6 +461,163 @@ public class GInterpreter {
 					continue;
 				} else if(lines[i].startsWith("@newline")) {
 					System.out.println();
+				} else if(lines[i].startsWith("@call ")) { // 6
+					String suffix = lines[i].substring(6);
+					
+					int line = 0;
+					try {
+						line = resolveValue(suffix);
+					} catch(UnresolvedException e) {
+						displayError(e.getMessage(), i);
+						return 1;
+					}
+					
+					pushToStack(i + 1);
+					i = line;
+					continue;
+				} else if(lines[i].startsWith("@func")) {
+					if(!funcsIgnored.contains(i)) {
+						funcsIgnored.add(i);
+						int funcLevel = 0;
+						// for(; !lines[i].startsWith("@endfunc"); i++);
+						for(;; i++) {
+							//System.out.println("i is " + i + ": " + lines[i] + "\n i + 1 is " + (i + 1) + ": " + lines[i + 1]);
+							if(lines[i].startsWith("@func")) {
+								funcLevel++;
+							}
+							if(lines[i].startsWith("@endfunc")) {
+								if(funcLevel == 1) { // First func is not considered a level
+									funcEndsIgnored.add(i);
+									i++;
+									continue linesLoop;
+								} else {
+									funcLevel--;
+								}
+							}
+						}
+					}
+				} else if(lines[i].startsWith("@endfunc")) {
+					if(!funcEndsIgnored.contains(i)) {
+						displayError("@endfunc missing matching @func", i);
+						return 1;
+					}
+				} else if(lines[i].startsWith("@% ")) {
+					String suffix = lines[i].substring(3);
+					String[] operands = suffix.split("::");
+					for(int x = 0; x < operands.length; x++) {
+						operands[x] = operands[x].trim();
+					}
+					
+					if(operands.length != 3) {
+						displayError("@% takes 3 operands, " + operands.length + " supplied.", i);
+						return 1;
+					}
+					
+					// Resolve operands
+					int value1 = 0;
+					int value2 = 0;
+					int rPointer = 0;
+					
+					try {
+						value1 = resolveValue(operands[0]);
+					} catch(UnresolvedException e) {
+						displayError(e.getMessage(), i);
+						return 1;
+					}
+					
+					try {
+						value2 = resolveValue(operands[1]);
+					} catch(UnresolvedException e) {
+						displayError(e.getMessage(), i);
+						return 1;
+					}
+					
+					RegistryTie t = resolveTie(operands[2]);
+					if(t == null) {
+						displayError("@%: cannot resolve result variable: " + operands[2], i);
+						return 1;
+					}
+					rPointer = t.getPointer();
+					
+					registers[rPointer] = value1 % value2;
+				} else if(lines[i].startsWith("@lt ")) {
+					String suffix = lines[i].substring(3);
+					String[] operands = suffix.split("::");
+					for(int x = 0; x < operands.length; x++) {
+						operands[x] = operands[x].trim();
+					}
+					
+					if(operands.length != 3) {
+						displayError("@lt takes 3 operands, " + operands.length + " supplied.", i);
+						return 1;
+					}
+					
+					// Resolve operands
+					int value1 = 0;
+					int value2 = 0;
+					int rPointer = 0;
+					
+					try {
+						value1 = resolveValue(operands[0]);
+					} catch(UnresolvedException e) {
+						displayError(e.getMessage(), i);
+						return 1;
+					}
+					
+					try {
+						value2 = resolveValue(operands[1]);
+					} catch(UnresolvedException e) {
+						displayError(e.getMessage(), i);
+						return 1;
+					}
+					
+					RegistryTie t = resolveTie(operands[2]);
+					if(t == null) {
+						displayError("@lt: cannot resolve result variable: " + operands[2], i);
+						return 1;
+					}
+					rPointer = t.getPointer();
+					
+					registers[rPointer] = (value1 < value2) ? 1 : 0;
+				} else if(lines[i].startsWith("@gt ")) {
+					String suffix = lines[i].substring(3);
+					String[] operands = suffix.split("::");
+					for(int x = 0; x < operands.length; x++) {
+						operands[x] = operands[x].trim();
+					}
+					
+					if(operands.length != 3) {
+						displayError("@gt takes 3 operands, " + operands.length + " supplied.", i);
+						return 1;
+					}
+					
+					// Resolve operands
+					int value1 = 0;
+					int value2 = 0;
+					int rPointer = 0;
+					
+					try {
+						value1 = resolveValue(operands[0]);
+					} catch(UnresolvedException e) {
+						displayError(e.getMessage(), i);
+						return 1;
+					}
+					
+					try {
+						value2 = resolveValue(operands[1]);
+					} catch(UnresolvedException e) {
+						displayError(e.getMessage(), i);
+						return 1;
+					}
+					
+					RegistryTie t = resolveTie(operands[2]);
+					if(t == null) {
+						displayError("@gt: cannot resolve result variable: " + operands[2], i);
+						return 1;
+					}
+					rPointer = t.getPointer();
+					
+					registers[rPointer] = (value1 > value2) ? 1 : 0;
 				}
 				
 				i++;
@@ -488,7 +659,7 @@ public class GInterpreter {
 		}
 	}
 	
-	public RegistryTie resolveTie(String var) {
+	private RegistryTie resolveTie(String var) {
 		String v = var.substring(1);
 		for(int i = 0; i < ties.length; i++) {
 			if(ties[i] != null && ties[i].getName().equals(v)) {
@@ -502,15 +673,17 @@ public class GInterpreter {
 		return t;
 	}
 	
-	public void displayError(String message, int line) {
+	private void displayError(String message, int line) {
 		System.err.println("ERROR: " + message + "\n@ line " + line);
 	}
 	
-	public int resolveValue(String operand) throws UnresolvedException {
+	private int resolveValue(String operand) throws UnresolvedException {
 		operand = operand.trim();
 		
 		if(operand.equals("~")) {
 			return i;
+		} else if(operand.equals("^")) {
+			return i + 1;
 		} else if(operand.startsWith("$")) {
 			// Variable=
 			RegistryTie t = resolveTie(operand);
@@ -531,7 +704,7 @@ public class GInterpreter {
 			
 			return registers[index];
 		} else {
-			// LIteral
+			// Literal
 			int literal = 0;
 			try {
 				literal = Integer.parseInt(operand);
@@ -540,6 +713,22 @@ public class GInterpreter {
 			}
 			
 			return literal;
+		}
+	}
+	
+	private void pushToStack(int x) throws StackError {
+		try {
+			stack[si++] = x;
+		} catch(Exception e) {
+			throw new StackError("Stack overflow!");
+		}
+	}
+	
+	private int popFromStack() throws StackError {
+		try {
+			return stack[--si];
+		} catch(Exception e) {
+			throw new StackError("Stack underflow!");
 		}
 	}
 }
