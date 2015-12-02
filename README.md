@@ -14,7 +14,7 @@ The line after the current line is "^" (used for functions).
 
 Compound expressions are NOT allowed. Example: ```@print $v + $f``` is invalid.
 
-There are 19 operators: ("value" refers to a literal, variable, or register.)
+These are the operators: ("value" refers to a literal, variable, or register.)
 
 	- @init (variable)
 		Tells the interpreter that you will be using this variable in the future.
