@@ -1,5 +1,5 @@
 # glang
-The g language. The g language is similar to Assembly, but includes more modern aspects, such as variables.
+Created by Mark Aldrich. The g language is similar to Assembly, but includes more modern aspects, such as variables.
 
 ### Syntax
 There are 3 types of symbols: operators, operands, and separators. Operators are built in (see below). Operands can be either variables, registers, or literals. Separators separate things passed to an operator. Example: ```@jumpz $v :: 3```
