@@ -344,8 +344,8 @@ public class GInterpreter {
 					if(value < 0) {
 						i = line;
 					}
-				} else if(lines[i].startsWith("jumpnz ")) { // 7
-					String suffix = lines[i].substring(7);
+				} else if(lines[i].startsWith("@jumpnz ")) { // 8
+					String suffix = lines[i].substring(8);
 					String[] operands = suffix.split("::");
 					if(operands.length != 2) {
 						displayError("@jumpnz takes 2 operands, " + operands.length + " supplied.", i);
