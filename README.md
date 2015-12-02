@@ -86,6 +86,37 @@ There are 19 operators: ("value" refers to a literal, variable, or register.)
 	- @pop (variable)
 		Pop the value on the stack into variable.
 
+	- @func and @endfunc
+		Used to declare a function. To the interpreter, all this means is to skip all code between this tag and the matching @endfunc tag the first time it encounters it. Example of how a function should be declared:
+			@store $func_square :: ^
+			; Takes 1 number
+			; Returns squared number
+			@func
+				; Pop in parameter and return location (Return location it always popped first, the rest of the parameters are then popped in reverse order)
+				@pop $func_square_ret
+				@pop $func_square_num
+				
+				; Multiply the number by itself and store the result in the same variable
+				@* $func_square_num :: $func_square_num :: $func_square_num
+				
+				; Push the result
+				@push $func_square_num
+				
+				; Return from the function
+				@jump $func_square_ret
+			@endfunc
+		And to call it:
+			; Push number
+			@push 5
+			
+			; Call function
+			@call $func_square
+			
+			; Pop result into a variable
+			@pop $squared
+			
+			; Print result (should be 25)
+			@print $squared
 ### Hello world!
 A "Hello world!" program can be written in g farily easily.
 ```@printl Hello world!```
